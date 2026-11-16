@@ -1,0 +1,102 @@
+name: mutantqa LLM regression gate
+description: Run a mutantqa suite against your LLM app and fail the job when it gets significantly worse.
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  config:
+    description: Path to mutantqa.yaml
+    default: mutantqa.yaml
+  tag:
+    description: Name for this run
+    default: pr
+  baseline:
+    description: Run to compare against ("baseline" = the committed baseline file)
+    default: baseline
+  start-command:
+    description: Optional command that starts the app under test (run in the background)
+    default: ""
+  wait-url:
+    description: Optional URL to poll until the app answers (e.g. http://localhost:8000/health)
+    default: ""
+  wait-seconds:
+    description: How long to wait for wait-url
+    default: "60"
+  repeats:
+    description: Override run.repeats (empty = use the config)
+    default: ""
+  mutantqa-version:
+    description: pip requirement for mutantqa ("." installs from the checked-out repo)
+    default: mutantqa
+  python-version:
+    default: "3.11"
+
+outputs:
+  passed:
+    description: '"true" if the gate passed'
+    value: ${{ steps.compare.outputs.passed }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: pip
+
+    - name: Install mutantqa
+      shell: bash
+      run: pip install "${{ inputs.mutantqa-version }}"
+
+    - name: Restore LLM judge cache
+      uses: actions/cache@v4
+      with:
+        path: .mutantqa/cache
+        key: mutantqa-cache-${{ github.ref_name }}-${{ github.sha }}
+        restore-keys: |
+          mutantqa-cache-${{ github.ref_name }}-
+          mutantqa-cache-
+
+    - name: Start the app under test
+      if: inputs.start-command != ''
+      shell: bash
+      run: |
+        nohup ${{ inputs.start-command }} > app.log 2>&1 &
+        if [ -n "${{ inputs.wait-url }}" ]; then
+          for i in $(seq 1 ${{ inputs.wait-seconds }}); do
+            curl -sf "${{ inputs.wait-url }}" > /dev/null && echo "app is up" && exit 0
+            sleep 1
+          done
+          echo "::error::App did not answer at ${{ inputs.wait-url }}"; cat app.log; exit 1
+        fi
+        sleep 10
+
+    - name: Run suite
+      shell: bash
+      run: |
+        REPEATS=""
+        if [ -n "${{ inputs.repeats }}" ]; then REPEATS="--repeats ${{ inputs.repeats }}"; fi
+        mutantqa run --tag "${{ inputs.tag }}" --config "${{ inputs.config }}" $REPEATS
+
+    - name: Compare and gate
+      id: compare
+      shell: bash
+      run: |
+        set +e
+        mutantqa compare "${{ inputs.baseline }}" "${{ inputs.tag }}" --config "${{ inputs.config }}" \
+          --gate --markdown mutantqa-report.md --json mutantqa-report.json
+        code=$?
+        cat mutantqa-report.md >> "$GITHUB_STEP_SUMMARY"
+        if [ $code -eq 0 ]; then echo "passed=true" >> "$GITHUB_OUTPUT"; else echo "passed=false" >> "$GITHUB_OUTPUT"; fi
+        exit $code
+
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: mutantqa-report-${{ inputs.tag }}
+        path: |
+          mutantqa-report.md
+          mutantqa-report.json
+        if-no-files-found: ignore

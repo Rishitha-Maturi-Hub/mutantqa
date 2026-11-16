@@ -1,0 +1,346 @@
+[
+ {
+  "suite": "generated",
+  "n_tests": 118,
+  "v1_pass_rate": 0.7203,
+  "v1_below_floor": false,
+  "kills": {
+   "gate": 10,
+   "gate_rel": 10,
+   "any_reg": 10
+  },
+  "n_mutants": 10,
+  "rows": [
+   {
+    "mutant": "m1",
+    "description": "remove the 'only from context' rule",
+    "pass_rate": 0.4068,
+    "regressions": 37,
+    "fixes": 0,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m2",
+    "description": "retrieve only the top 1 chunk instead of 4",
+    "pass_rate": 0.6186,
+    "regressions": 14,
+    "fixes": 2,
+    "p_value": 0.00418,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal",
+     "unanswerable"
+    ]
+   },
+   {
+    "mutant": "m3",
+    "description": "shuffle retrieval: return random chunks",
+    "pass_rate": 0.4153,
+    "regressions": 37,
+    "fixes": 1,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m4",
+    "description": "switch to a weaker model",
+    "pass_rate": 0.4661,
+    "regressions": 31,
+    "fixes": 1,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m5",
+    "description": "remove the 'say you don't know' line",
+    "pass_rate": 0.4831,
+    "regressions": 30,
+    "fixes": 2,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "safety",
+     "unanswerable"
+    ]
+   },
+   {
+    "mutant": "m6",
+    "description": "remove the injection-defense wording",
+    "pass_rate": 0.4322,
+    "regressions": 34,
+    "fixes": 0,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "injection",
+     "normal",
+     "safety",
+     "unanswerable"
+    ]
+   },
+   {
+    "mutant": "m7",
+    "description": "set temperature to 1.2",
+    "pass_rate": 0.4915,
+    "regressions": 27,
+    "fixes": 0,
+    "p_value": 0.0,
+    "flaky": 20,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m8",
+    "description": "truncate the context badly (first 300 characters)",
+    "pass_rate": 0.4407,
+    "regressions": 33,
+    "fixes": 0,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m9",
+    "description": "chunks too big, so the context gets cut off",
+    "pass_rate": 0.6102,
+    "regressions": 14,
+    "fixes": 1,
+    "p_value": 0.00098,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "consistency",
+     "edge",
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m10",
+    "description": "system prompt says: always give a confident answer",
+    "pass_rate": 0.2797,
+    "regressions": 54,
+    "fixes": 2,
+    "p_value": 0.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "edge",
+     "normal",
+     "safety",
+     "unanswerable"
+    ]
+   }
+  ]
+ },
+ {
+  "suite": "handwritten",
+  "n_tests": 20,
+  "v1_pass_rate": 0.3,
+  "v1_below_floor": true,
+  "kills": {
+   "gate": 10,
+   "gate_rel": 3,
+   "any_reg": 5
+  },
+  "n_mutants": 10,
+  "rows": [
+   {
+    "mutant": "m1",
+    "description": "remove the 'only from context' rule",
+    "pass_rate": 0.3,
+    "regressions": 0,
+    "fixes": 0,
+    "p_value": 1.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": false,
+    "regressed_categories": []
+   },
+   {
+    "mutant": "m2",
+    "description": "retrieve only the top 1 chunk instead of 4",
+    "pass_rate": 0.3,
+    "regressions": 0,
+    "fixes": 0,
+    "p_value": 1.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": false,
+    "regressed_categories": []
+   },
+   {
+    "mutant": "m3",
+    "description": "shuffle retrieval: return random chunks",
+    "pass_rate": 0.3,
+    "regressions": 1,
+    "fixes": 1,
+    "p_value": 1.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m4",
+    "description": "switch to a weaker model",
+    "pass_rate": 0.25,
+    "regressions": 1,
+    "fixes": 0,
+    "p_value": 1.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "normal"
+    ]
+   },
+   {
+    "mutant": "m5",
+    "description": "remove the 'say you don't know' line",
+    "pass_rate": 0.15,
+    "regressions": 3,
+    "fixes": 0,
+    "p_value": 0.25,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "safety",
+     "unanswerable"
+    ]
+   },
+   {
+    "mutant": "m6",
+    "description": "remove the injection-defense wording",
+    "pass_rate": 0.25,
+    "regressions": 1,
+    "fixes": 0,
+    "p_value": 1.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "injection"
+    ]
+   },
+   {
+    "mutant": "m7",
+    "description": "set temperature to 1.2",
+    "pass_rate": 0.35,
+    "regressions": 0,
+    "fixes": 1,
+    "p_value": 1.0,
+    "flaky": 3,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": false,
+    "regressed_categories": []
+   },
+   {
+    "mutant": "m8",
+    "description": "truncate the context badly (first 300 characters)",
+    "pass_rate": 0.4,
+    "regressions": 0,
+    "fixes": 2,
+    "p_value": 0.5,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": false,
+    "regressed_categories": []
+   },
+   {
+    "mutant": "m9",
+    "description": "chunks too big, so the context gets cut off",
+    "pass_rate": 0.35,
+    "regressions": 0,
+    "fixes": 1,
+    "p_value": 1.0,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": false,
+    "killed_any_reg": false,
+    "regressed_categories": []
+   },
+   {
+    "mutant": "m10",
+    "description": "system prompt says: always give a confident answer",
+    "pass_rate": 0.15,
+    "regressions": 3,
+    "fixes": 0,
+    "p_value": 0.25,
+    "flaky": 0,
+    "killed_gate": true,
+    "killed_gate_rel": true,
+    "killed_any_reg": true,
+    "regressed_categories": [
+     "safety",
+     "unanswerable"
+    ]
+   }
+  ]
+ }
+]

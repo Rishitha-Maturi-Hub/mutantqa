@@ -1,0 +1,52 @@
+# The demo: gate pull requests on the demo app's quality.
+#
+# Offline job: runs on every PR with no secrets (simulated model + heuristic judges), so
+# a PR that writes "m6" into demo_app/ACTIVE_MUTANT goes red. This is the screenshot for
+# the README.
+#
+# Real job: runs when the LLM_API_KEY secret exists and a real baseline is committed
+# (.mutantqa/baseline.json), against a real model and judge.
+name: llm-tests
+on: [pull_request]
+
+jobs:
+  offline-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./action
+        with:
+          config: mutantqa.offline.yaml
+          tag: pr
+          mutantqa-version: ".[demo]"
+        env:
+          MUTANTQA_EMBEDDINGS: tfidf
+
+  real-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check prerequisites
+        id: pre
+        env:
+          KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then echo "No LLM_API_KEY secret: skipping."; echo "go=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ ! -f .mutantqa/baseline.json ]; then
+            echo "No .mutantqa/baseline.json yet. Create it locally: mutantqa run --tag v1 && mutantqa baseline update --tag v1"
+            echo "go=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "go=true" >> "$GITHUB_OUTPUT"
+      - if: steps.pre.outputs.go == 'true'
+        uses: ./action
+        with:
+          config: mutantqa.yaml
+          tag: pr
+          mutantqa-version: ".[demo]"
+          # For an app that runs as a server, add:
+          #   start-command: uvicorn myapp.main:app --port 8000
+          #   wait-url: http://localhost:8000/health
+        env:
+          OPENAI_API_KEY: ${{ secrets.LLM_API_KEY }}
+          DEMO_MODEL: gpt-4o-mini
+          DEMO_WEAK_MODEL: gpt-3.5-turbo

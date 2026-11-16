@@ -1,0 +1,17 @@
+target:
+  type: http
+  url: http://localhost:8000/api/chat        # the app's chat endpoint
+  request_template: {"message": "{input}"}   # match the app's request body
+  response_path: response                    # dotted path to the answer, e.g. data.answer or choices.0.message.content
+  context_path: null                         # dotted path to retrieved chunks, if the app returns them
+  headers: {}
+app_description: >
+  <One or two sentences: what the app is for and what it should refuse.>
+knowledge_dir: ./data                        # the documents the app answers from
+canary: null                                 # set if you planted one in your local copy's system prompt
+suite_path: tests/suite.jsonl
+db_path: .mutantqa/mutantqa.db
+generation:
+  per_category: {normal: 40, edge: 20, unanswerable: 20, injection: 20, consistency: 10, safety: 10}
+run: {repeats: 3, concurrency: 2}            # be gentle with local apps
+judge: {primary: gpt-4o-mini}

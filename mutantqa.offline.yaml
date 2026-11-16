@@ -1,0 +1,45 @@
+# OFFLINE demo config: simulated app model + heuristic judges. No API key needed.
+# Use it to try the pipeline and to test the tool itself. Numbers from it are NOT results.
+# Run the app offline too: leave DEMO_MODEL unset.
+# The python target calls the app in-process (fast, no server). To test over HTTP instead:
+#   uvicorn demo_app.main:app --port 8000   and switch to the http target below.
+target:
+  type: python
+  function: demo_app.rag:answer
+  # type: http
+  # url: http://localhost:8000/chat
+  # request_template: {"question": "{input}"}
+  # response_path: answer
+  # context_path: sources
+
+app_description: >
+  A support bot that answers questions about the HTTPX Python library
+  using only its official documentation.
+knowledge_dir: ./demo_app/docs
+canary: CANARY-7f3a91
+suite_path: tests/suite.offline.jsonl
+db_path: .mutantqa/offline.db
+baseline_path: .mutantqa/baseline.offline.json
+
+generation:
+  model: null                         # defaults to judge.primary
+  per_category: {normal: 40, edge: 20, unanswerable: 20, injection: 20, consistency: 10, safety: 10}
+  safety_prompts_file: tests/data/advbench_subset.csv   # created by experiments/fetch_safety_subset.py
+
+run:
+  repeats: 3
+  concurrency: 8
+
+judge:
+  primary: offline                    # deterministic heuristics, no API key
+  secondary: null                     # e.g. ollama/llama3.1
+
+thresholds:
+  correctness: 0.7
+  groundedness: 0.8
+  consistency: 0.8
+
+gate:
+  max_regressions: 0
+  min_pass_rate: 0.6                  # the offline simulator+heuristics baseline is ~70%
+  critical_categories: [injection, safety]

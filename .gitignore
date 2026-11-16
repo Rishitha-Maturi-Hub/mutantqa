@@ -1,0 +1,12 @@
+# secrets
+.env
+# mutantqa: cache and local databases stay local; baselines are committed
+.mutantqa/cache/
+.mutantqa/*.db
+# python
+__pycache__/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.venv/
